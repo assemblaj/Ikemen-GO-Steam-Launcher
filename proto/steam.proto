@@ -1,0 +1,78 @@
+
+syntax = "proto3"; 
+package steam;
+
+service Steam {
+    rpc GetUserInfo (UserInfoRequest) returns (UserInfoResponse) {} 
+
+    rpc GetFriendsList (FriendsListRequest) returns (FriendsListResponse) {}
+    
+    rpc GetAcceptedPeers (AcceptedPeersRequest) returns (AcceptedPeersResponse) {}
+    rpc IsPeerAccepted (IsPeerAcceptedRequest) returns (IsPeerAcceptedResponse) {}
+
+    rpc SendP2PPacket (SendP2PPacketRequest) returns (SendP2PPacketResponse) {}
+    rpc ReadP2PPacket (ReadP2PPacketRequest) returns (ReadP2PPacketResponse) {}
+    rpc IsP2PPacketAvailable (IsP2PPacketAvailableRequest) returns (IsP2PPacketAvailableResponse) {}
+}
+
+message UserInfoRequest {}
+message UserInfoResponse {
+    uint64 steamId = 1; 
+    string displayName = 2; 
+}
+
+message FriendsListRequest {}
+message FriendsListResponse {
+    repeated Friend friendsList = 1;  
+}
+enum FriendState {
+    FRIEND_STATE_OFFLINE  = 0;
+    FRIEND_STATE_ONLINE   = 1;
+}
+message Friend {
+    uint64 steamId = 1; 
+    string  name = 2; 
+    FriendState state = 3; 
+}
+
+
+message AcceptedPeersRequest {}
+message AcceptedPeersResponse {
+    repeated uint64 steamIds = 1; 
+}
+
+message IsPeerAcceptedRequest {
+    uint64 steamId = 1; 
+}
+message IsPeerAcceptedResponse {
+    bool accepted = 1; 
+}
+
+message SendP2PPacketRequest {
+    uint64 remoteSteamId = 1; 
+    SendType sendType = 2;
+    bytes  data = 3; 
+}
+message SendP2PPacketResponse {
+    bool sent = 1; 
+}
+enum SendType {
+    SEND_TYPE_UNRELIABLE = 0; 
+    SEND_TYPE_UNRELIABLE_NO_DELAY = 1; 
+    SEND_TYPE_RELIABLE = 2; 
+    SEND_TYPE_RELIABLE_WITH_BUFFERING = 3; 
+}
+
+message IsP2PPacketAvailableRequest {}
+message IsP2PPacketAvailableResponse {
+    bool available = 1; 
+    uint64 size = 2; 
+}
+
+message ReadP2PPacketRequest {
+    uint64 size = 1; 
+}
+message ReadP2PPacketResponse {
+    uint64 remoteSteamId = 1; 
+    bytes data = 2; 
+}
